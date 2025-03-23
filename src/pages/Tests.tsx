@@ -39,7 +39,7 @@ const fetchTests = async () => {
 
 const Tests = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [subjectFilter, setSubjectFilter] = useState("");
+  const [subjectFilter, setSubjectFilter] = useState("all");
   const { user } = useAuthContext();
   const navigate = useNavigate();
 
@@ -58,7 +58,7 @@ const Tests = () => {
     const matchesSearch = test.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                         test.description.toLowerCase().includes(searchTerm.toLowerCase());
     
-    const matchesSubject = subjectFilter === "" || test.subject.toLowerCase() === subjectFilter.toLowerCase();
+    const matchesSubject = subjectFilter === "all" || test.subject.toLowerCase() === subjectFilter.toLowerCase();
     
     return matchesSearch && matchesSubject;
   }) || [];
@@ -106,7 +106,7 @@ const Tests = () => {
                 <SelectValue placeholder="All Subjects" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Subjects</SelectItem>
+                <SelectItem value="all">All Subjects</SelectItem>
                 {uniqueSubjects.map((subject: string) => (
                   <SelectItem key={subject} value={subject}>
                     {subject}
@@ -117,6 +117,7 @@ const Tests = () => {
           </div>
         </div>
 
+        {/* Update the filter logic to use "all" instead of empty string */}
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
