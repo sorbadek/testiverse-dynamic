@@ -11,6 +11,13 @@ import { ClipboardList, Search, Clock, Filter, Book } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuthContext } from "@/context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface Test {
   _id: string;
@@ -94,19 +101,19 @@ const Tests = () => {
           </div>
           
           <div className="md:w-1/4">
-            <div className="relative">
-              <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              <select
-                className="w-full h-10 pl-10 pr-4 rounded-md border border-input bg-background text-sm"
-                value={subjectFilter}
-                onChange={(e) => setSubjectFilter(e.target.value)}
-              >
-                <option value="">All Subjects</option>
-                {uniqueSubjects.map((subject) => (
-                  <option key={subject} value={subject}>{subject}</option>
+            <Select value={subjectFilter} onValueChange={setSubjectFilter}>
+              <SelectTrigger>
+                <SelectValue placeholder="All Subjects" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">All Subjects</SelectItem>
+                {uniqueSubjects.map((subject: string) => (
+                  <SelectItem key={subject} value={subject}>
+                    {subject}
+                  </SelectItem>
                 ))}
-              </select>
-            </div>
+              </SelectContent>
+            </Select>
           </div>
         </div>
 
