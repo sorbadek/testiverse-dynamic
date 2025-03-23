@@ -1,99 +1,87 @@
 
 const mongoose = require('mongoose');
 
+const OptionSchema = new mongoose.Schema({
+  text: {
+    type: String,
+    required: [true, 'Option text is required']
+  },
+  value: {
+    type: String,
+    required: [true, 'Option value is required']
+  }
+});
+
 const QuestionSchema = new mongoose.Schema({
   text: {
     type: String,
-    required: [true, 'Please provide question text'],
-    trim: true,
+    required: [true, 'Question text is required'],
+    trim: true
   },
-  type: {
-    type: String,
-    enum: ['multiple-choice', 'true-false', 'short-answer', 'essay'],
-    required: true,
-  },
-  options: [{
-    text: {
-      type: String,
-      trim: true,
-    },
-    isCorrect: {
-      type: Boolean,
-      default: false,
-    },
-  }],
+  options: [OptionSchema],
   correctAnswer: {
     type: String,
-    trim: true,
-  },
-  points: {
-    type: Number,
-    required: true,
-    default: 1,
+    required: [true, 'Correct answer is required']
   },
   explanation: {
     type: String,
-    trim: true,
-  },
-}, {
-  timestamps: true,
+    default: ''
+  }
 });
 
-const TestSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: [true, 'Please provide a test title'],
-    trim: true,
-    maxlength: [100, 'Title cannot be more than 100 characters'],
+const TestSchema = new mongoose.Schema(
+  {
+    title: {
+      type: String,
+      required: [true, 'Please add a title'],
+      trim: true,
+      maxlength: [100, 'Title cannot be more than 100 characters']
+    },
+    description: {
+      type: String,
+      required: [true, 'Please add a description'],
+      maxlength: [500, 'Description cannot be more than 500 characters']
+    },
+    subject: {
+      type: String,
+      required: [true, 'Please add a subject'],
+      trim: true
+    },
+    timeLimit: {
+      type: Number,
+      required: [true, 'Please add a time limit in minutes'],
+      min: [1, 'Time limit must be at least 1 minute']
+    },
+    questions: [QuestionSchema],
+    isPublished: {
+      type: Boolean,
+      default: true
+    },
+    creator: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'User',
+      required: true
+    }
   },
-  description: {
-    type: String,
-    trim: true,
-  },
-  subject: {
-    type: String,
-    required: [true, 'Please provide a subject'],
-    trim: true,
-  },
-  creator: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
-  },
-  timeLimit: {
-    type: Number, // Time in minutes
-  },
-  passingScore: {
-    type: Number, // Percentage
-    min: 0,
-    max: 100,
-  },
-  questions: [QuestionSchema],
-  isPublished: {
-    type: Boolean,
-    default: false,
-  },
-  allowReview: {
-    type: Boolean,
-    default: true,
-  },
-  randomizeQuestions: {
-    type: Boolean,
-    default: false,
-  },
-  showResults: {
-    type: Boolean,
-    default: true,
-  },
-}, {
-  timestamps: true,
-  toJSON: { virtuals: true },
-  toObject: { virtuals: true }
+  {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
+  }
+);
+
+// Cascade delete results when a test is deleted
+TestSchema.pre('remove', async function(next) {
+  await this.model('Result').deleteMany({ test: this._id });
+  next();
 });
 
-// Virtual for total points
-TestSchema.virtual('totalPoints').get(function() {
-  return this.questions.reduce((total, question) => total + question.points, 0);
+// Reverse populate with virtuals
+TestSchema.virtual('results', {
+  ref: 'Result',
+  localField: '_id',
+  foreignField: 'test',
+  justOne: false
 });
 
 module.exports = mongoose.model('Test', TestSchema);

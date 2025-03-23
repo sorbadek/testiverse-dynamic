@@ -19,6 +19,10 @@ import Contact from "./pages/Contact";
 import Tests from "./pages/Tests";
 import Results from "./pages/Results";
 import AdminDashboard from "./pages/AdminDashboard";
+import TestPage from "./pages/TestPage";
+import ResultPage from "./pages/ResultPage";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 // Add framer-motion for animations
 const queryClient = new QueryClient();
@@ -35,12 +39,16 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password/:token" element={<ResetPassword />} />
               <Route path="/about" element={<About />} />
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/tests" element={<Tests />} />
+              <Route path="/test/:id" element={<TestPage />} />
               <Route path="/results" element={<Results />} />
+              <Route path="/result/:id" element={<ResultPage />} />
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="/admin/tests/new" element={<AdminDashboard />} />
               <Route path="/admin/tests/:id" element={<AdminDashboard />} />

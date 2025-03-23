@@ -58,3 +58,31 @@ export const handleApiError = (error: unknown, customMessage?: string) => {
     toast.error(customMessage || 'An unexpected error occurred');
   }
 };
+
+// Test endpoints
+export const testAPI = {
+  getAllTests: () => api.get('/tests'),
+  getTest: (id: string) => api.get(`/tests/${id}`),
+  createTest: (testData: any) => api.post('/tests', testData),
+  updateTest: (id: string, testData: any) => api.put(`/tests/${id}`, testData),
+  deleteTest: (id: string) => api.delete(`/tests/${id}`)
+};
+
+// Result endpoints
+export const resultAPI = {
+  getUserResults: () => api.get('/results'),
+  getResult: (id: string) => api.get(`/results/${id}`),
+  submitTest: (resultData: any) => api.post('/results', resultData),
+  getAllResults: () => api.get('/results/all')
+};
+
+// Auth endpoints
+export const authAPI = {
+  register: (userData: any) => api.post('/auth/register', userData),
+  login: (credentials: any) => api.post('/auth/login', credentials),
+  getProfile: () => api.get('/auth/me'),
+  updateProfile: (userData: any) => api.put('/auth/profile', userData),
+  forgotPassword: (email: string) => api.post('/auth/forgot-password', { email }),
+  resetPassword: (token: string, password: string) => 
+    api.post('/auth/reset-password', { token, password })
+};

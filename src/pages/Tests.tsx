@@ -3,11 +3,11 @@ import { MainLayout } from "@/components/layout/MainLayout";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { api, handleApiError } from "@/lib/api";
+import { testAPI, handleApiError } from "@/lib/api";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ClipboardList, Search, Clock, Filter, Book } from "lucide-react";
+import { ClipboardList, Search, Clock, Book } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuthContext } from "@/context/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -32,11 +32,6 @@ interface Test {
   createdAt: string;
 }
 
-const fetchTests = async () => {
-  const response = await api.get('/tests');
-  return response.data.tests;
-};
-
 const Tests = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [subjectFilter, setSubjectFilter] = useState("all");
@@ -45,7 +40,7 @@ const Tests = () => {
 
   const { data: tests, isLoading, error } = useQuery({
     queryKey: ['tests'],
-    queryFn: fetchTests,
+    queryFn: () => testAPI.getAllTests().then(res => res.data.tests),
   });
 
   useEffect(() => {
