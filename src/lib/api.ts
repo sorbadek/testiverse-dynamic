@@ -1,6 +1,6 @@
 
 import axios from 'axios';
-import { toast } from '@/components/ui/sonner';
+import { toast } from 'sonner';
 
 // Base URL for the API
 // In production, you would use an environment variable
